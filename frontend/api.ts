@@ -6,7 +6,7 @@ function token() {
   return localStorage.getItem('sf_token') ?? ''
 }
 
-function authHeaders(): HeadersInit {
+export function authHeaders(): HeadersInit {
   const t = token()
   return t ? { Authorization: `Bearer ${t}` } : {}
 }

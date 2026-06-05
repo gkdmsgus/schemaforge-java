@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import type { SavedSession, ChatMessage, NetGraph, GenerateResult } from '../types'
+import { getSessions, deleteSession as dbDeleteSession, type AuthUser } from '../api'
 
 interface StoredEntry {
   id: number
@@ -48,20 +49,48 @@ interface SideDrawerProps {
   open: boolean
   onClose: () => void
   onLoadSession: (session: SavedSession) => void
+  user?: AuthUser | null
 }
 
-export default function SideDrawer({ open, onClose, onLoadSession }: SideDrawerProps) {
+export default function SideDrawer({ open, onClose, onLoadSession, user }: SideDrawerProps) {
   const [savedResults, setSavedResults] = useState<StoredEntry[]>([])
+  const [dbMode, setDbMode] = useState(false)
 
   useEffect(() => {
-    if (open) setSavedResults(getSavedResults())
-  }, [open])
+    if (!open) return
+    if (user) {
+      setDbMode(true)
+      getSessions().then(sessions => {
+        const entries: StoredEntry[] = sessions.map((s, i) => ({
+          id: i,
+          name: s.prompt,
+          prompt: s.prompt,
+          result: s.graph ? { graph: s.graph as NetGraph, filename: s.filename ?? '' } : undefined,
+          time: new Date(s.created_at).getTime(),
+          graph: s.graph as NetGraph | null,
+          _dbId: s.id,
+        } as StoredEntry & { _dbId: string }))
+        setSavedResults(entries)
+      }).catch(() => setSavedResults(getSavedResults()))
+    } else {
+      setDbMode(false)
+      setSavedResults(getSavedResults())
+    }
+  }, [open, user])
 
   function deleteSaved(e: React.MouseEvent, id: number) {
     e.stopPropagation()
-    const next = getSavedResults().filter(s => s.id !== id)
-    localStorage.setItem('sf_saved_results', JSON.stringify(next))
-    setSavedResults(next)
+    if (dbMode) {
+      const entry = savedResults.find(s => s.id === id) as (StoredEntry & { _dbId?: string }) | undefined
+      if (entry?._dbId) {
+        dbDeleteSession(entry._dbId).catch(() => {})
+      }
+      setSavedResults(prev => prev.filter(s => s.id !== id))
+    } else {
+      const next = getSavedResults().filter(s => s.id !== id)
+      localStorage.setItem('sf_saved_results', JSON.stringify(next))
+      setSavedResults(next)
+    }
   }
 
   const groups = groupByDate(savedResults)

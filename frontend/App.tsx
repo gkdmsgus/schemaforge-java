@@ -9,7 +9,7 @@ import SideDrawer from './components/SideDrawer'
 import AuthModal from './components/AuthModal'
 import { getSavedResults, saveResultToLocal } from './components/ResultPanel'
 import { Button } from './components/primitives.tsx'
-import { loadAuth, logout as apiLogout, type AuthUser } from './api'
+import { loadAuth, logout as apiLogout, authHeaders, saveSession, type AuthUser } from './api'
 import type {
   AppSettings, LogLine, LogKind, Progress, ClarifyData, PlanData,
   Version, ChatSession, PendingCached, GenerateResult,
@@ -113,7 +113,7 @@ export default function App() {
     try {
       const res = await fetch(`${API}/plan`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({ description: prompt }),
       })
       if (!res.ok) throw new Error('plan request failed')
@@ -154,7 +154,7 @@ export default function App() {
       try {
         const cRes = await fetch(`${API}/clarify`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
           body: JSON.stringify({ description: p }),
         })
         if (cRes.ok) {
@@ -189,7 +189,7 @@ export default function App() {
     try {
       const res = await fetch(`${API}/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({ description: p }),
         signal: abort.signal,
       })
@@ -237,6 +237,9 @@ export default function App() {
             setResult(d)
             setResultKey(k => k + 1)
             saveResultToLocal(d, p)
+            if (authUser) {
+              saveSession({ prompt: p, graph: d.graph, filename: d.filename }).catch(() => {})
+            }
             setProgress(null)
             setLogLines(prev => {
               const cleared = prev.map(l => ({ ...l, cursor: false }))
@@ -288,6 +291,7 @@ export default function App() {
         open={sideDrawerOpen}
         onClose={() => setSideDrawerOpen(false)}
         onLoadSession={handleLoadSession}
+        user={authUser}
       />
       <Header
         variant={headerVariant}

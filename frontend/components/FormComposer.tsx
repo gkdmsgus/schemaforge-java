@@ -601,7 +601,7 @@ export default function FormComposer({ onSubmit }: { onSubmit: (prompt: string, 
   return (
     <div style={{ position: 'relative', minHeight: '100%', background: 'var(--sf-bg)', overflow: 'hidden' }}>
       <TraceField opacity={0.18} />
-      <div style={{ position: 'relative', maxWidth: 940, margin: '0 auto', padding: '56px 24px 96px' }}>
+      <div className="sf-composer-wrap" style={{ position: 'relative', maxWidth: 940, margin: '0 auto', padding: '56px 24px 96px' }}>
 
         {/* Hero headline */}
         <div style={{ textAlign: 'center', marginBottom: 44 }}>
@@ -756,7 +756,7 @@ export default function FormComposer({ onSubmit }: { onSubmit: (prompt: string, 
 
         {/* Step 1: Circuit type cards */}
         <SectionLabel num="01" title="회로 종류" />
-        <div style={{
+        <div className="sf-type-grid" style={{
           display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10,
           marginBottom: 28,
         }}>
@@ -859,7 +859,7 @@ function WorkflowSection() {
         </p>
       </div>
 
-      <div style={{
+      <div className="sf-workflow-grid" style={{
         display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12,
         position: 'relative',
       }}>
