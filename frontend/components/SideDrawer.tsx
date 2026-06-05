@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import type { SavedSession, ChatMessage, NetGraph, GenerateResult } from '../types'
-import { getSessions, deleteSession as dbDeleteSession, type AuthUser } from '../api'
+import { getSessions, deleteSession as dbDeleteSession, getFavorites, removeFavorite, type AuthUser, type DbFavorite } from '../api'
 
 interface StoredEntry {
   id: number
@@ -52,8 +52,12 @@ interface SideDrawerProps {
   user?: AuthUser | null
 }
 
+type Tab = 'history' | 'favorites'
+
 export default function SideDrawer({ open, onClose, onLoadSession, user }: SideDrawerProps) {
+  const [tab, setTab] = useState<Tab>('history')
   const [savedResults, setSavedResults] = useState<StoredEntry[]>([])
+  const [favorites, setFavorites] = useState<DbFavorite[]>([])
   const [dbMode, setDbMode] = useState(false)
 
   useEffect(() => {
@@ -72,8 +76,10 @@ export default function SideDrawer({ open, onClose, onLoadSession, user }: SideD
         } as StoredEntry & { _dbId: string }))
         setSavedResults(entries)
       }).catch(() => setSavedResults(getSavedResults()))
+      getFavorites().then(setFavorites).catch(() => {})
     } else {
       setDbMode(false)
+      setTab('history')
       setSavedResults(getSavedResults())
     }
   }, [open, user])
@@ -117,47 +123,98 @@ export default function SideDrawer({ open, onClose, onLoadSession, user }: SideD
       }}>
         {/* Header */}
         <div style={{
-          padding: '16px 16px 12px',
-          borderBottom: '1px solid #151821',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '14px 16px 0',
+          borderBottom: `1px solid var(--sf-line)`,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#a78bfa', display: 'block' }} />
-            <span style={{ fontFamily: MONO, fontSize: 11, color: '#a78bfa', fontWeight: 700, letterSpacing: '0.12em' }}>SCHEMAFORGE</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--sf-violet)', display: 'block' }} />
+              <span style={{ fontFamily: MONO, fontSize: 11, color: 'var(--sf-violet)', fontWeight: 700, letterSpacing: '0.12em' }}>SCHEMAFORGE</span>
+            </div>
+            <button onClick={onClose} style={{
+              background: 'none', border: 'none', color: 'var(--sf-fg-dim)', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 2px',
+            }}>×</button>
           </div>
-          <button onClick={onClose} style={{
-            background: 'none', border: 'none', color: '#3a4055', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 2px',
-          }}>×</button>
-        </div>
-
-        {/* Session list */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '4px 0 8px' }}>
-          {savedResults.length === 0 ? (
-            <p style={{ padding: '40px 16px', textAlign: 'center', color: '#2a3040', fontSize: 11, fontFamily: SANS }}>
-              저장된 회로가 없습니다
-            </p>
-          ) : groups.map(([label, items]) => (
-            <div key={label}>
-              <div style={{
-                padding: '12px 16px 4px',
-                fontFamily: MONO, fontSize: 9, fontWeight: 700,
-                color: '#2a3040', letterSpacing: '0.1em', textTransform: 'uppercase',
-              }}>{label}</div>
-              {items.map(s => (
-                <SessionItem
-                  key={s.id}
-                  title={s.name || s.prompt}
-                  time={formatTime(s.time)}
-                  msgCount={s.messages?.length || 0}
-                  onClick={() => {
-                    onLoadSession({ prompt: s.prompt, graph: s.result?.graph ?? undefined, circuitName: s.prompt, messages: s.messages || [], result: s.result })
-                    onClose()
+          {/* Tabs — only show when logged in */}
+          {user && (
+            <div style={{ display: 'flex', gap: 0, marginBottom: -1 }}>
+              {(['history', 'favorites'] as Tab[]).map(t => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  style={{
+                    flex: 1, padding: '7px 0',
+                    background: 'none', border: 'none',
+                    borderBottom: `2px solid ${tab === t ? 'var(--sf-amber)' : 'transparent'}`,
+                    fontFamily: MONO, fontSize: 10, fontWeight: 700,
+                    color: tab === t ? 'var(--sf-amber)' : 'var(--sf-fg-dim)',
+                    cursor: 'pointer', letterSpacing: '0.08em',
+                    transition: 'color 0.15s',
                   }}
-                  onDelete={(e) => deleteSaved(e, s.id)}
-                />
+                >
+                  {t === 'history' ? '히스토리' : '⭐ 즐겨찾기'}
+                </button>
               ))}
             </div>
-          ))}
+          )}
+        </div>
+
+        {/* Content */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '4px 0 8px' }}>
+          {tab === 'favorites' && user ? (
+            favorites.length === 0 ? (
+              <p style={{ padding: '40px 16px', textAlign: 'center', color: 'var(--sf-fg-dim)', fontSize: 11, fontFamily: SANS }}>
+                즐겨찾기한 회로가 없어요<br/>
+                <span style={{ fontSize: 10, opacity: 0.6 }}>결과 화면 상단의 북마크 버튼으로 추가하세요</span>
+              </p>
+            ) : favorites.map((f, i) => (
+              <SessionItem
+                key={f.id}
+                title={f.prompt}
+                time={new Date(f.createdAt).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}
+                msgCount={0}
+                isFavorite
+                onClick={() => {
+                  if (f.graph) {
+                    onLoadSession({ prompt: f.prompt, graph: f.graph as NetGraph, circuitName: f.prompt, messages: [], result: { graph: f.graph as NetGraph, filename: f.filename ?? '' } })
+                    onClose()
+                  }
+                }}
+                onDelete={async (e) => {
+                  e.stopPropagation()
+                  await removeFavorite(f.id).catch(() => {})
+                  setFavorites(prev => prev.filter(x => x.id !== f.id))
+                }}
+              />
+            ))
+          ) : (
+            savedResults.length === 0 ? (
+              <p style={{ padding: '40px 16px', textAlign: 'center', color: 'var(--sf-fg-dim)', fontSize: 11, fontFamily: SANS }}>
+                저장된 회로가 없습니다
+              </p>
+            ) : groups.map(([label, items]) => (
+              <div key={label}>
+                <div style={{
+                  padding: '12px 16px 4px',
+                  fontFamily: MONO, fontSize: 9, fontWeight: 700,
+                  color: 'var(--sf-fg-faint)', letterSpacing: '0.1em', textTransform: 'uppercase',
+                }}>{label}</div>
+                {items.map(s => (
+                  <SessionItem
+                    key={s.id}
+                    title={s.name || s.prompt}
+                    time={formatTime(s.time)}
+                    msgCount={s.messages?.length || 0}
+                    onClick={() => {
+                      onLoadSession({ prompt: s.prompt, graph: s.result?.graph ?? undefined, circuitName: s.prompt, messages: s.messages || [], result: s.result })
+                      onClose()
+                    }}
+                    onDelete={(e) => deleteSaved(e, s.id)}
+                  />
+                ))}
+              </div>
+            ))
+          )}
         </div>
 
         {/* Footer */}
@@ -184,7 +241,7 @@ export default function SideDrawer({ open, onClose, onLoadSession, user }: SideD
   )
 }
 
-function SessionItem({ title, time, msgCount, onClick, onDelete }: { title: string; time: string; msgCount: number; onClick: () => void; onDelete: (e: React.MouseEvent) => void }) {
+function SessionItem({ title, time, msgCount, onClick, onDelete, isFavorite }: { title: string; time: string; msgCount: number; onClick: () => void; onDelete: (e: React.MouseEvent) => void | Promise<void>; isFavorite?: boolean }) {
   const [hovered, setHovered] = useState(false)
 
   return (

@@ -1,0 +1,257 @@
+
+  [32m[1mVITE[22m v8.0.2[39m  [2mready in [0m[1m309[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4000[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+21 │ @import 'sf-tokens';   // 새 디자인 시스템 토큰 (--sf-*) — 기존 토큰과 공존
+   │         ^^^^^^^^^^^
+   ╵
+    frontend\styles\main.scss 21:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+22 │ @import 'variables';
+   │         ^^^^^^^^^^^
+   ╵
+    frontend\styles\main.scss 22:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+23 │ @import 'base';
+   │         ^^^^^^
+   ╵
+    frontend\styles\main.scss 23:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+24 │ @import 'card';
+   │         ^^^^^^
+   ╵
+    frontend\styles\main.scss 24:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+25 │ @import 'header';
+   │         ^^^^^^^^
+   ╵
+    frontend\styles\main.scss 25:9  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+81 │         background-color: map-get($cat-colors, $i);
+   │                           ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 81:27  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+90 │           linear-gradient(to right, map-get($cat-colors, $i) 4px, transparent 4px) 0 0 / 4px 4px,
+   │                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 90:37  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+91 │           linear-gradient(to right, transparent 4px, map-get($cat-colors, $i) 4px) 0 4px / 8px 4px;
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 91:54  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+95 │         border-color: map-get($cat-colors, $i);
+   │                       ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 95:23  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+98 │         .cat-name { color: map-get($cat-colors, $i); }
+   │                            ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 98:28  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+WARNING: 10 repetitive deprecation warnings omitted.
+Run in verbose mode to see all warnings.
+
+[2mPM 1:44:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 2:05:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 2:07:06[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 2:07:34[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 2:07:43[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 2:08:06[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 2:08:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/Header.tsx[22m
+[2mPM 2:12:13[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:12:19[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:12:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:12:49[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:16:54[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx, /frontend/components/AuthModal.tsx[22m
+[2mPM 2:17:06[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:17:15[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:17:20[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:17:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:17:32[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 2:17:39[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/SideDrawer.tsx[22m
+[2mPM 2:17:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/SideDrawer.tsx[22m
+[2mPM 2:17:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/App.tsx[22m
+[2mPM 3:07:40[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/styles/main.scss[22m
+[2mPM 3:07:49[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 3:08:07[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+[2mPM 3:08:12[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/FormComposer.tsx[22m
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+21 │ @import 'sf-tokens';   // 새 디자인 시스템 토큰 (--sf-*) — 기존 토큰과 공존
+   │         ^^^^^^^^^^^
+   ╵
+    frontend\styles\main.scss 21:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+22 │ @import 'variables';
+   │         ^^^^^^^^^^^
+   ╵
+    frontend\styles\main.scss 22:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+23 │ @import 'base';
+   │         ^^^^^^
+   ╵
+    frontend\styles\main.scss 23:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+24 │ @import 'card';
+   │         ^^^^^^
+   ╵
+    frontend\styles\main.scss 24:9  root stylesheet
+
+DEPRECATION WARNING [import]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+25 │ @import 'header';
+   │         ^^^^^^^^
+   ╵
+    frontend\styles\main.scss 25:9  root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+81 │         background-color: map-get($cat-colors, $i);
+   │                           ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 81:27  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+90 │           linear-gradient(to right, map-get($cat-colors, $i) 4px, transparent 4px) 0 0 / 4px 4px,
+   │                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 90:37  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+91 │           linear-gradient(to right, transparent 4px, map-get($cat-colors, $i) 4px) 0 4px / 8px 4px;
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 91:54  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+95 │         border-color: map-get($cat-colors, $i);
+   │                       ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 95:23  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+DEPRECATION WARNING [global-builtin]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.get instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+98 │         .cat-name { color: map-get($cat-colors, $i); }
+   │                            ^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    frontend\styles\_wizard.scss 98:28  @import
+    frontend\styles\main.scss 27:9      root stylesheet
+
+WARNING: 10 repetitive deprecation warnings omitted.
+Run in verbose mode to see all warnings.
+
+[2mPM 3:31:39[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/AuthModal.tsx[22m
+[2mPM 3:31:54[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/frontend/components/AuthModal.tsx[22m

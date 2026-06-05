@@ -61,6 +61,7 @@ export default function App() {
   const [resultKey, setResultKey] = useState(0)
   const [pendingCached, setPendingCached] = useState<PendingCached | null>(null)
   const pendingGenerateRef = useRef<{ prompt: string; typeKey?: string; skipCache?: boolean } | null>(null)
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'light')
@@ -80,6 +81,7 @@ export default function App() {
     setVersions([])
     setCurrentVersionId(null)
     setInitialChatSession(null)
+    setCurrentSessionId(null)
   }
 
   function handleLoadSession(session: SavedSession) {
@@ -238,7 +240,9 @@ export default function App() {
             setResultKey(k => k + 1)
             saveResultToLocal(d, p)
             if (authUser) {
-              saveSession({ prompt: p, graph: d.graph, filename: d.filename }).catch(() => {})
+              saveSession({ prompt: p, graph: d.graph, filename: d.filename })
+                .then(id => setCurrentSessionId(id))
+                .catch(() => {})
             }
             setProgress(null)
             setLogLines(prev => {
@@ -432,6 +436,8 @@ export default function App() {
           onSelectVersion={selectVersion}
           initialChatSession={initialChatSession}
           onApplyVersion={applyCurrentVersion}
+          authUser={authUser}
+          sessionId={currentSessionId}
         />
       )}
     </div>

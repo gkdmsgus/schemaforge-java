@@ -109,8 +109,18 @@ export async function saveMessage(sessionId: string, role: string, content: stri
 
 // ── Favorites ─────────────────────────────────────────────────────
 
-export async function getFavorites() {
-  return get<{ favorites: unknown[] }>('/favorites')
+export interface DbFavorite {
+  id: string
+  sessionId: string
+  prompt: string
+  graph?: unknown
+  filename?: string
+  createdAt: string
+}
+
+export async function getFavorites(): Promise<DbFavorite[]> {
+  const data = await get<{ favorites: DbFavorite[] }>('/favorites')
+  return data.favorites
 }
 
 export async function addFavorite(sessionId: string): Promise<string> {
