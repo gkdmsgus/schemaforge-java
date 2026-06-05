@@ -289,17 +289,58 @@ function CircuitDecoration() {
   )
 }
 
+// ── Feature Icons (SVG) ───────────────────────────────────────────
+
+function IcCircuit() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="5" y="5" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+      <path d="M8 2v3M8 11v3M2 8h3M11 8h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+      <circle cx="2" cy="8" r="1" fill="currentColor"/>
+      <circle cx="14" cy="8" r="1" fill="currentColor"/>
+      <circle cx="8" cy="2" r="1" fill="currentColor"/>
+      <circle cx="8" cy="14" r="1" fill="currentColor"/>
+    </svg>
+  )
+}
+
+function IcHistory() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 4v4l2.5 2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M3 8a5 5 0 1 1 1.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+      <path d="M2 5.5V8h2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function IcBookmark() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M4 2h8a1 1 0 0 1 1 1v10.5l-5-3-5 3V3a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function IcBolt() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M9.5 2L4 9h4.5L6.5 14 13 7H8.5L9.5 2z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
 // ── Data ──────────────────────────────────────────────────────────
 
 const LOGIN_FEATURES = [
-  { icon: '⚡', title: '빠른 재접근', text: '저장된 회로 세션 즉시 불러오기' },
-  { icon: '⭐', title: '즐겨찾기', text: '자주 쓰는 회로 북마크 관리' },
+  { icon: <IcBolt />,     title: '빠른 재접근', text: '저장된 회로 세션 즉시 불러오기' },
+  { icon: <IcBookmark />, title: '즐겨찾기',   text: '자주 쓰는 회로 북마크 관리' },
 ]
 
 const REGISTER_FEATURES = [
-  { icon: '🤖', title: 'AI 회로 설계', text: 'GPT-4o 기반 자동 회로 생성' },
-  { icon: '💾', title: '세션 저장', text: '모든 설계 히스토리 자동 보관' },
-  { icon: '⭐', title: '즐겨찾기', text: '나만의 회로 라이브러리 구축' },
+  { icon: <IcCircuit />,  title: 'AI 회로 설계', text: 'GPT-4o 기반 자동 회로 생성' },
+  { icon: <IcHistory />,  title: '세션 저장',    text: '모든 설계 히스토리 자동 보관' },
+  { icon: <IcBookmark />, title: '즐겨찾기',    text: '나만의 회로 라이브러리 구축' },
 ]
 
 // ── Styles ────────────────────────────────────────────────────────
@@ -376,10 +417,11 @@ const STYLES = `
 .auth-feature-icon {
   width: 32px; height: 32px;
   background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.14);
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; flex-shrink: 0;
+  flex-shrink: 0;
+  color: rgba(255,255,255,0.75);
 }
 .auth-feature-title {
   font-size: 13px; font-weight: 600;
