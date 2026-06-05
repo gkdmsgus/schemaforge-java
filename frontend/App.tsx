@@ -60,6 +60,7 @@ export default function App() {
   const [initialChatSession, setInitialChatSession] = useState<ChatSession | null>(null)
   const [resultKey, setResultKey] = useState(0)
   const [pendingCached, setPendingCached] = useState<PendingCached | null>(null)
+  const pendingGenerateRef = useRef<{ prompt: string; typeKey?: string; skipCache?: boolean } | null>(null)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', 'light')
@@ -133,6 +134,13 @@ export default function App() {
 
   async function runGenerate(p: string, typeKey?: string, skipCache = false) {
     if (!p.trim() || loading) return
+
+    // 로그인 필요: 모달 열고 로그인 후 자동 재개
+    if (!authUser) {
+      pendingGenerateRef.current = { prompt: p, typeKey, skipCache }
+      setAuthModalOpen(true)
+      return
+    }
 
     if (!skipCache) {
       const cached = getSavedResults().find(s => s.prompt === p)
@@ -295,8 +303,19 @@ export default function App() {
 
       <AuthModal
         open={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        onSuccess={(user) => setAuthUser(user)}
+        onClose={() => {
+          setAuthModalOpen(false)
+          pendingGenerateRef.current = null
+        }}
+        onSuccess={(user, _token) => {
+          setAuthUser(user)
+          // 로그인 전에 시도했던 생성 요청이 있으면 이어서 실행
+          const pending = pendingGenerateRef.current
+          if (pending) {
+            pendingGenerateRef.current = null
+            setTimeout(() => runGenerate(pending.prompt, pending.typeKey, pending.skipCache), 100)
+          }
+        }}
       />
 
       <Settings
