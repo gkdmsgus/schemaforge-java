@@ -16,11 +16,8 @@ public class SpaController {
         return Map.of("status", "ok", "version", "2.0.0");
     }
 
-    // SPA fallback — 모든 non-API GET 요청을 index.html로 포워딩
-    @GetMapping(value = {
-        "/", "/generate", "/sessions", "/favorites",
-        "/auth/**"
-    })
+    // SPA fallback — 프론트엔드 진입점만 index.html로 포워딩
+    @GetMapping(value = { "/", "/auth/**" })
     public String spa() {
         return "forward:/index.html";
     }
