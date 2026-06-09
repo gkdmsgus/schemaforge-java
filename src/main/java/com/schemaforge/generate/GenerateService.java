@@ -2,6 +2,8 @@ package com.schemaforge.generate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -35,6 +37,8 @@ import java.util.regex.*;
  */
 @Service
 public class GenerateService {
+
+    private static final Logger log = LoggerFactory.getLogger(GenerateService.class);
 
     /**
      * GPT에게 전달하는 시스템 프롬프트 (역할 지시문)
@@ -203,12 +207,13 @@ public class GenerateService {
             emitter.complete(); // SSE 연결 정상 종료
 
         } catch (Exception e) {
-            // 예상치 못한 예외 발생 시 error 이벤트를 보내고 연결 종료
+            log.error("Generate failed: {}", e.getMessage(), e);
             try {
-                Map<String, String> errData = Map.of("message", "Server error: " + e.getMessage());
-                send(emitter, "error", mapper.writeValueAsString(errData));
+                String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+                emitter.send(SseEmitter.event().name("error")
+                        .data(mapper.writeValueAsString(Map.of("message", msg))));
             } catch (Exception ignored) {}
-            emitter.completeWithError(e);
+            emitter.complete();
         }
     }
 

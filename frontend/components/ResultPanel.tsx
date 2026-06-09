@@ -1,7 +1,7 @@
 ﻿import React, { useRef, useState, Dispatch, SetStateAction } from 'react'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
-import { addFavorite, removeFavorite, type AuthUser } from '../api'
+import { addFavorite, removeFavorite, authHeaders, type AuthUser } from '../api'
 import CircuitCanvas from './CircuitCanvas'
 import PCBLayout from './PCBLayout'
 import BomTable from './BomTable'
@@ -126,7 +126,7 @@ export default function ResultPanel({
         const baseName = result?.filename?.replace('.net', '') || 'circuit'
         const res = await fetch(`${API}/generate_pcb_from_graph`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
           body: JSON.stringify({ graph: localGraph, baseName }),
         })
         data = await res.json()
@@ -134,7 +134,7 @@ export default function ResultPanel({
         if (!result?.filename) { setPcbStatus('error'); return }
         const res = await fetch(`${API}/generate_pcb`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
           body: JSON.stringify({ filename: result.filename }),
         })
         data = await res.json()
@@ -154,7 +154,7 @@ export default function ResultPanel({
     try {
       const res = await fetch(`${API}/generate_gerber`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({ pcbFilename }),
       })
       const data = await res.json()

@@ -134,11 +134,11 @@ export default function AuthModal({ open, onClose, onSuccess }: AuthModalProps) 
                 )}
                 <FloatingInput
                   ref={emailRef}
-                  label="이메일"
-                  type="email"
+                  label="아이디"
+                  type="text"
                   value={email}
                   onChange={setEmail}
-                  placeholder="name@example.com"
+                  placeholder="아이디 입력"
                   required
                 />
                 <FloatingInput
@@ -199,7 +199,7 @@ export default function AuthModal({ open, onClose, onSuccess }: AuthModalProps) 
                 <div className="auth-checklist">
                   <CheckItem done={password.length >= 6}>6자 이상</CheckItem>
                   <CheckItem done={confirm.length > 0 && confirm === password}>비밀번호 일치</CheckItem>
-                  <CheckItem done={email.includes('@')}>올바른 이메일</CheckItem>
+                  <CheckItem done={email.length >= 4}>아이디 4자 이상</CheckItem>
                 </div>
               )}
 

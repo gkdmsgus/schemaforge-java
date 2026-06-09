@@ -22,6 +22,9 @@ public class Session {
     @Column(name = "user_id")
     private UUID userId;
 
+    @Column(columnDefinition = "TEXT")
+    private String name;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String prompt;
 

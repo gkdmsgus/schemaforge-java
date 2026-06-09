@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import type { SavedSession, ChatMessage, NetGraph, GenerateResult } from '../types'
-import { getSessions, deleteSession as dbDeleteSession, getFavorites, removeFavorite, type AuthUser, type DbFavorite } from '../api'
+import { getSessions, deleteSession as dbDeleteSession, getFavorites, removeFavorite, renameSession, type AuthUser, type DbFavorite } from '../api'
 
 interface StoredEntry {
   id: number
@@ -10,6 +10,7 @@ interface StoredEntry {
   time: number
   messages?: ChatMessage[]
   graph?: NetGraph | null
+  _dbId?: string
 }
 
 function getSavedResults(): StoredEntry[] {
@@ -67,13 +68,13 @@ export default function SideDrawer({ open, onClose, onLoadSession, user }: SideD
       getSessions().then(sessions => {
         const entries: StoredEntry[] = sessions.map((s, i) => ({
           id: i,
-          name: s.prompt,
+          name: s.name ?? s.prompt,
           prompt: s.prompt,
           result: s.graph ? { graph: s.graph as NetGraph, filename: s.filename ?? '' } : undefined,
           time: new Date(s.created_at).getTime(),
           graph: s.graph as NetGraph | null,
           _dbId: s.id,
-        } as StoredEntry & { _dbId: string }))
+        }))
         setSavedResults(entries)
       }).catch(() => setSavedResults(getSavedResults()))
       getFavorites().then(setFavorites).catch(() => {})
@@ -205,11 +206,15 @@ export default function SideDrawer({ open, onClose, onLoadSession, user }: SideD
                     title={s.name || s.prompt}
                     time={formatTime(s.time)}
                     msgCount={s.messages?.length || 0}
+                    dbId={s._dbId}
                     onClick={() => {
                       onLoadSession({ prompt: s.prompt, graph: s.result?.graph ?? undefined, circuitName: s.prompt, messages: s.messages || [], result: s.result })
                       onClose()
                     }}
                     onDelete={(e) => deleteSaved(e, s.id)}
+                    onRename={(newName) => {
+                      setSavedResults(prev => prev.map(x => x.id === s.id ? { ...x, name: newName } : x))
+                    }}
                   />
                 ))}
               </div>
@@ -241,30 +246,82 @@ export default function SideDrawer({ open, onClose, onLoadSession, user }: SideD
   )
 }
 
-function SessionItem({ title, time, msgCount, onClick, onDelete, isFavorite }: { title: string; time: string; msgCount: number; onClick: () => void; onDelete: (e: React.MouseEvent) => void | Promise<void>; isFavorite?: boolean }) {
+function SessionItem({ title, time, msgCount, onClick, onDelete, onRename, dbId, isFavorite }: {
+  title: string; time: string; msgCount: number
+  onClick: () => void
+  onDelete: (e: React.MouseEvent) => void | Promise<void>
+  onRename?: (name: string) => void
+  dbId?: string
+  isFavorite?: boolean
+}) {
   const [hovered, setHovered] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editVal, setEditVal] = useState(title)
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  function startEdit(e: React.MouseEvent) {
+    if (isFavorite || !onRename || !dbId) return
+    e.stopPropagation()
+    setEditVal(title)
+    setEditing(true)
+    setTimeout(() => { inputRef.current?.select() }, 20)
+  }
+
+  function commitEdit() {
+    const trimmed = editVal.trim()
+    if (trimmed && trimmed !== title && dbId) {
+      renameSession(dbId, trimmed).catch(() => {})
+      onRename?.(trimmed)
+    }
+    setEditing(false)
+  }
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') { e.preventDefault(); commitEdit() }
+    if (e.key === 'Escape') { setEditing(false) }
+  }
 
   return (
     <div
-      onClick={onClick}
+      onClick={editing ? undefined : onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         display: 'flex', alignItems: 'center',
         padding: '8px 12px 8px 16px',
-        cursor: 'pointer',
+        cursor: editing ? 'default' : 'pointer',
         background: hovered ? '#0d1018' : 'transparent',
         transition: 'background 0.1s',
         gap: 8,
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{
-          fontSize: 12, color: hovered ? '#c0cce8' : '#8090b0',
-          fontFamily: SANS, lineHeight: 1.4,
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          transition: 'color 0.1s',
-        }}>{title}</div>
+        {editing ? (
+          <input
+            ref={inputRef}
+            value={editVal}
+            onChange={e => setEditVal(e.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={onKeyDown}
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: '100%', background: '#0a0d14', border: '1px solid #2a3555',
+              borderRadius: 4, color: '#c0cce8', fontFamily: SANS, fontSize: 12,
+              padding: '2px 6px', outline: 'none', boxSizing: 'border-box',
+            }}
+          />
+        ) : (
+          <div
+            onDoubleClick={startEdit}
+            title={!isFavorite && dbId ? '더블클릭으로 이름 수정' : undefined}
+            style={{
+              fontSize: 12, color: hovered ? '#c0cce8' : '#8090b0',
+              fontFamily: SANS, lineHeight: 1.4,
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              transition: 'color 0.1s',
+            }}
+          >{title}</div>
+        )}
         <div style={{ fontSize: 9, color: '#2a3040', fontFamily: MONO, marginTop: 2 }}>
           {time}{msgCount > 0 ? ` · 대화 ${msgCount}개` : ''}
         </div>

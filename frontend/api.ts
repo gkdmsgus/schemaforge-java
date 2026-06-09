@@ -42,10 +42,10 @@ export interface AuthUser { id: string; email: string }
 export interface AuthResponse { user: AuthUser; token: string }
 
 export async function register(email: string, password: string): Promise<AuthResponse> {
-  const data = await post<{ user: AuthUser; session: { access_token: string } }>(
+  const data = await post<{ user: AuthUser; token?: string; session?: { access_token: string } }>(
     '/auth/register', { email, password }
   )
-  return { user: data.user, token: data.session?.access_token ?? '' }
+  return { user: data.user, token: data.token ?? data.session?.access_token ?? '' }
 }
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
@@ -74,6 +74,7 @@ export function loadAuth(): { user: AuthUser; token: string } | null {
 
 export interface DbSession {
   id: string
+  name?: string
   prompt: string
   guide?: string
   graph?: unknown
@@ -95,6 +96,14 @@ export async function saveSession(payload: {
 
 export async function deleteSession(id: string): Promise<void> {
   await del(`/sessions/${id}`)
+}
+
+export async function renameSession(id: string, name: string): Promise<void> {
+  await fetch(`${BASE}/sessions/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ name }),
+  })
 }
 
 // ── Chat Messages ─────────────────────────────────────────────────

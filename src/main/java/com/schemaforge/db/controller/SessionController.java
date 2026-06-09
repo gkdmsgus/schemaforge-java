@@ -65,6 +65,17 @@ public class SessionController {
         return ResponseEntity.ok(Map.of("id", saved.getId()));
     }
 
+    @PatchMapping("/sessions/{id}")
+    public ResponseEntity<?> renameSession(@PathVariable UUID id,
+                                            @RequestBody Map<String, String> body,
+                                            HttpServletRequest req) {
+        AuthUser user = authUser(req);
+        if (user == null) return unauthorized();
+        sessions.findByIdAndUserId(id, UUID.fromString(user.getId()))
+                .ifPresent(s -> { s.setName(body.get("name")); sessions.save(s); });
+        return ResponseEntity.ok(Map.of("ok", true));
+    }
+
     @DeleteMapping("/sessions/{id}")
     public ResponseEntity<?> deleteSession(@PathVariable UUID id, HttpServletRequest req) {
         AuthUser user = authUser(req);

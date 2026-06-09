@@ -67,6 +67,15 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', 'light')
   }, [])
 
+  // 앱 시작 시 저장된 토큰이 서버에서 유효한지 검증
+  useEffect(() => {
+    const stored = loadAuth()
+    if (!stored) return
+    fetch('/auth/me', { headers: { Authorization: `Bearer ${stored.token}` } })
+      .then(r => { if (!r.ok) { localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); setAuthUser(null) } })
+      .catch(() => {})
+  }, [])
+
   useEffect(() => {
     localStorage.setItem('sf_settings', JSON.stringify(settings))
   }, [settings])
@@ -205,14 +214,35 @@ export default function App() {
 
       while (true) {
         const { done, value } = await reader.read()
-        if (done) break
-        buf += decoder.decode(value, { stream: true })
+        if (value) buf += decoder.decode(value, { stream: !done })
+        if (done) {
+          if (buf.trim()) {
+            const parts = buf.split('\n\n')
+            buf = ''
+            for (const part of parts) {
+              const evtM = part.match(/^event:[ ]?(.+)$/m)
+              const dataM = part.match(/^data:[ ]?([\s\S]+)$/m)
+              if (!evtM || !dataM) continue
+              const evt = evtM[1].trim()
+              const raw = dataM[1].trim()
+              if (evt === 'error') {
+                let msg = raw
+                try { msg = JSON.parse(raw).message || raw } catch (_) {}
+                setError(msg); setProgress(null); setLoading(false)
+                return
+              } else if (evt === 'done') {
+                gotResult = true
+              }
+            }
+          }
+          break
+        }
         const parts = buf.split('\n\n')
         buf = parts.pop() ?? ''
 
         for (const part of parts) {
-          const evtM = part.match(/^event: (.+)$/m)
-          const dataM = part.match(/^data: ([\s\S]+)$/m)
+          const evtM = part.match(/^event:[ ]?(.+)$/m)
+          const dataM = part.match(/^data:[ ]?([\s\S]+)$/m)
           if (!evtM || !dataM) continue
           const evt = evtM[1].trim()
           const raw = dataM[1].trim()
