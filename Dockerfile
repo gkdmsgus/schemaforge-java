@@ -45,6 +45,7 @@ ENV PATH="/venv/bin:$PATH"
 RUN mkdir -p outputs
 
 COPY --from=java-builder /app/build/libs/*.jar app.jar
+COPY scripts/ ./scripts/
 
 EXPOSE 8080
 # 512MB 무료 플랜 메모리 제한에 맞게 JVM 힙 제한

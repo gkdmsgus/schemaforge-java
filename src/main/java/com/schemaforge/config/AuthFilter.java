@@ -17,7 +17,8 @@ public class AuthFilter implements Filter {
 
     private static final Set<String> PROTECTED = Set.of(
         "/generate", "/clarify", "/plan", "/chat_edit", "/test_code",
-        "/sessions", "/favorites"
+        "/sessions", "/favorites",
+        "/generate_pcb", "/generate_gerber"
     );
 
     private final AuthService authService;
